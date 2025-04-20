@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { sign, verify, decode } from "hono/jwt";
+import { sign } from "hono/jwt";
 import { signinInput, signupInput } from "@thakurharshit18/medium-common";
 export const userRouter = new Hono<{
   Bindings: {
@@ -20,9 +20,7 @@ userRouter.post("/signup", async (c) => {
     const { success } = signupInput.safeParse(body);
     if (!success) {
       c.status(411);
-      return c.json({
-        message: "inputs are not correct",
-      });
+      console.log("bhai inputs shi nhi h ");
     }
     const user = await prisma.user.create({
       data: {
@@ -32,6 +30,7 @@ userRouter.post("/signup", async (c) => {
       },
     });
     const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+    console.log("aagye paaji");
     return c.text(jwt);
   } catch (error) {
     console.error("Signup Error:", error);
